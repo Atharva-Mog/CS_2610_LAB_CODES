@@ -1,0 +1,70 @@
+
+a.out:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000080000000 <main>:
+    80000000:	020042b7          	lui	t0,0x2004
+    80000004:	6309                	lui	t1,0x2
+    80000006:	7103031b          	addiw	t1,t1,1808
+    8000000a:	0062a023          	sw	t1,0(t0) # 2004000 <main-0x7dffc000>
+    8000000e:	00000e17          	auipc	t3,0x0
+    80000012:	05ae0e13          	addi	t3,t3,90 # 80000068 <user_mode>
+    80000016:	341e1073          	csrw	mepc,t3
+    8000001a:	300022f3          	csrr	t0,mstatus
+    8000001e:	6309                	lui	t1,0x2
+    80000020:	8003031b          	addiw	t1,t1,-2048
+    80000024:	fff34393          	not	t2,t1
+    80000028:	0072f2b3          	and	t0,t0,t2
+    8000002c:	30029073          	csrw	mstatus,t0
+    80000030:	08000e93          	li	t4,128
+    80000034:	30402f73          	csrr	t5,mie
+    80000038:	01df6f33          	or	t5,t5,t4
+    8000003c:	304f1073          	csrw	mie,t5
+    80000040:	00000297          	auipc	t0,0x0
+    80000044:	01028293          	addi	t0,t0,16 # 80000050 <mtrap>
+    80000048:	30529073          	csrw	mtvec,t0
+    8000004c:	30200073          	mret
+
+0000000080000050 <mtrap>:
+    80000050:	020043b7          	lui	t2,0x2004
+    80000054:	0003ae03          	lw	t3,0(t2) # 2004000 <main-0x7dffc000>
+    80000058:	6e89                	lui	t4,0x2
+    8000005a:	710e8e9b          	addiw	t4,t4,1808
+    8000005e:	9e76                	add	t3,t3,t4
+    80000060:	01c3a023          	sw	t3,0(t2)
+    80000064:	30200073          	mret
+
+0000000080000068 <user_mode>:
+    80000068:	00000013          	nop
+    8000006c:	00000013          	nop
+    80000070:	bfe5                	j	80000068 <user_mode>
+	...
+
+Disassembly of section .riscv.attributes:
+
+0000000000000000 <.riscv.attributes>:
+   0:	3641                	addiw	a2,a2,-16
+   2:	0000                	unimp
+   4:	7200                	ld	s0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <main-0x7fffffec>
+   c:	002c                	addi	a1,sp,8
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3676                	fld	fa2,376(sp)
+  14:	6934                	ld	a3,80(a0)
+  16:	7032                	0x7032
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	addiw	tp,tp,-5
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	3266                	fld	ft4,120(sp)
+  26:	3070                	fld	fa2,224(s0)
+  28:	645f 7032 5f30      	0x5f307032645f
+  2e:	30703263          	0x30703263
+  32:	0800                	addi	s0,sp,16
+  34:	0a01                	addi	s4,s4,0
+  36:	0b              	Address 0x0000000000000036 is out of bounds.
+
