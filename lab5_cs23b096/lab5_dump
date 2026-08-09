@@ -1,0 +1,87 @@
+
+a.out:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000080000000 <machine_mode>:
+    80000000:	00000297          	auipc	t0,0x0
+    80000004:	04428293          	addi	t0,t0,68 # 80000044 <supervisor_mode>
+    80000008:	34129073          	csrw	mepc,t0
+    8000000c:	6289                	lui	t0,0x2
+    8000000e:	8002829b          	addiw	t0,t0,-2048
+    80000012:	30002373          	csrr	t1,mstatus
+    80000016:	fff2c393          	not	t2,t0
+    8000001a:	00737333          	and	t1,t1,t2
+    8000001e:	6e05                	lui	t3,0x1
+    80000020:	800e0e1b          	addiw	t3,t3,-2048
+    80000024:	01c36333          	or	t1,t1,t3
+    80000028:	30031073          	csrw	mstatus,t1
+    8000002c:	00000f97          	auipc	t6,0x0
+    80000030:	068f8f93          	addi	t6,t6,104 # 80000094 <machine_trap>
+    80000034:	305f9073          	csrw	mtvec,t6
+    80000038:	4f05                	li	t5,1
+    8000003a:	0f22                	slli	t5,t5,0x8
+    8000003c:	302f2073          	csrs	medeleg,t5
+    80000040:	30200073          	mret
+
+0000000080000044 <supervisor_mode>:
+    80000044:	00000e97          	auipc	t4,0x0
+    80000048:	03ce8e93          	addi	t4,t4,60 # 80000080 <supervisor_trap>
+    8000004c:	105e9073          	csrw	stvec,t4
+    80000050:	00000297          	auipc	t0,0x0
+    80000054:	02628293          	addi	t0,t0,38 # 80000076 <user_mode>
+    80000058:	14129073          	csrw	sepc,t0
+    8000005c:	6289                	lui	t0,0x2
+    8000005e:	8002829b          	addiw	t0,t0,-2048
+    80000062:	10002373          	csrr	t1,sstatus
+    80000066:	fff2c393          	not	t2,t0
+    8000006a:	00737333          	and	t1,t1,t2
+    8000006e:	10031073          	csrw	sstatus,t1
+    80000072:	10200073          	sret
+
+0000000080000076 <user_mode>:
+    80000076:	4505                	li	a0,1
+    80000078:	458d                	li	a1,3
+    8000007a:	461d                	li	a2,7
+    8000007c:	00000073          	ecall
+
+0000000080000080 <supervisor_trap>:
+    80000080:	00000073          	ecall
+    80000084:	00000297          	auipc	t0,0x0
+    80000088:	ff228293          	addi	t0,t0,-14 # 80000076 <user_mode>
+    8000008c:	14129073          	csrw	sepc,t0
+    80000090:	10200073          	sret
+
+0000000080000094 <machine_trap>:
+    80000094:	341022f3          	csrr	t0,mepc
+    80000098:	0291                	addi	t0,t0,4
+    8000009a:	34129073          	csrw	mepc,t0
+    8000009e:	30200073          	mret
+
+Disassembly of section .riscv.attributes:
+
+0000000000000000 <.riscv.attributes>:
+   0:	3641                	addiw	a2,a2,-16
+   2:	0000                	unimp
+   4:	7200                	ld	s0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <machine_mode-0x7fffffec>
+   c:	002c                	addi	a1,sp,8
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3676                	fld	fa2,376(sp)
+  14:	6934                	ld	a3,80(a0)
+  16:	7032                	0x7032
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	addiw	tp,tp,-5
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	3266                	fld	ft4,120(sp)
+  26:	3070                	fld	fa2,224(s0)
+  28:	645f 7032 5f30      	0x5f307032645f
+  2e:	30703263          	0x30703263
+  32:	0800                	addi	s0,sp,16
+  34:	0a01                	addi	s4,s4,0
+  36:	0b              	Address 0x0000000000000036 is out of bounds.
+

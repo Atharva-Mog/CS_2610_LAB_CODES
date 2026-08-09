@@ -1,0 +1,167 @@
+
+a.out:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000080000000 <main>:
+    80000000:	020042b7          	lui	t0,0x2004
+    80000004:	6309                	lui	t1,0x2
+    80000006:	7103031b          	addiw	t1,t1,1808
+    8000000a:	0062a023          	sw	t1,0(t0) # 2004000 <main-0x7dffc000>
+    8000000e:	00000e17          	auipc	t3,0x0
+    80000012:	112e0e13          	addi	t3,t3,274 # 80000120 <Task_A>
+    80000016:	341e1073          	csrw	mepc,t3
+    8000001a:	300022f3          	csrr	t0,mstatus
+    8000001e:	6309                	lui	t1,0x2
+    80000020:	8003031b          	addiw	t1,t1,-2048
+    80000024:	fff34393          	not	t2,t1
+    80000028:	0072f2b3          	and	t0,t0,t2
+    8000002c:	30029073          	csrw	mstatus,t0
+    80000030:	08000e93          	li	t4,128
+    80000034:	30402f73          	csrr	t5,mie
+    80000038:	01df6f33          	or	t5,t5,t4
+    8000003c:	304f1073          	csrw	mie,t5
+    80000040:	00000297          	auipc	t0,0x0
+    80000044:	01028293          	addi	t0,t0,16 # 80000050 <context_switch>
+    80000048:	30529073          	csrw	mtvec,t0
+    8000004c:	30200073          	mret
+
+0000000080000050 <context_switch>:
+    80000050:	00000f17          	auipc	t5,0x0
+    80000054:	114f0f13          	addi	t5,t5,276 # 80000164 <current>
+    80000058:	000f2f83          	lw	t6,0(t5)
+    8000005c:	000f8463          	beqz	t6,80000064 <save_context_A>
+    80000060:	0001                	nop
+    80000062:	a821                	j	8000007a <save_context_B>
+
+0000000080000064 <save_context_A>:
+    80000064:	00000e97          	auipc	t4,0x0
+    80000068:	0dce8e93          	addi	t4,t4,220 # 80000140 <stack_a>
+    8000006c:	005eb023          	sd	t0,0(t4)
+    80000070:	34102f73          	csrr	t5,mepc
+    80000074:	ffeebc23          	sd	t5,-8(t4)
+    80000078:	a835                	j	800000b4 <switch_to_B>
+
+000000008000007a <save_context_B>:
+    8000007a:	00000e97          	auipc	t4,0x0
+    8000007e:	0d6e8e93          	addi	t4,t4,214 # 80000150 <stack_b>
+    80000082:	005eb023          	sd	t0,0(t4)
+    80000086:	34102f73          	csrr	t5,mepc
+    8000008a:	ffeebc23          	sd	t5,-8(t4)
+    8000008e:	a009                	j	80000090 <switch_to_A>
+
+0000000080000090 <switch_to_A>:
+    80000090:	00000e97          	auipc	t4,0x0
+    80000094:	0b0e8e93          	addi	t4,t4,176 # 80000140 <stack_a>
+    80000098:	000eb283          	ld	t0,0(t4)
+    8000009c:	ff8eb383          	ld	t2,-8(t4)
+    800000a0:	34139073          	csrw	mepc,t2
+    800000a4:	00000f17          	auipc	t5,0x0
+    800000a8:	0c0f0f13          	addi	t5,t5,192 # 80000164 <current>
+    800000ac:	4f81                	li	t6,0
+    800000ae:	01ff2023          	sw	t6,0(t5)
+    800000b2:	a881                	j	80000102 <switch>
+
+00000000800000b4 <switch_to_B>:
+    800000b4:	00000397          	auipc	t2,0x0
+    800000b8:	0ac38393          	addi	t2,t2,172 # 80000160 <first_time>
+    800000bc:	0003a383          	lw	t2,0(t2)
+    800000c0:	02038463          	beqz	t2,800000e8 <initial_switch_to_B>
+    800000c4:	00000f17          	auipc	t5,0x0
+    800000c8:	0a0f0f13          	addi	t5,t5,160 # 80000164 <current>
+    800000cc:	4f85                	li	t6,1
+    800000ce:	01ff2023          	sw	t6,0(t5)
+    800000d2:	00000e97          	auipc	t4,0x0
+    800000d6:	07ee8e93          	addi	t4,t4,126 # 80000150 <stack_b>
+    800000da:	000eb283          	ld	t0,0(t4)
+    800000de:	ff8eb383          	ld	t2,-8(t4)
+    800000e2:	34139073          	csrw	mepc,t2
+    800000e6:	a831                	j	80000102 <switch>
+
+00000000800000e8 <initial_switch_to_B>:
+    800000e8:	00000e97          	auipc	t4,0x0
+    800000ec:	048e8e93          	addi	t4,t4,72 # 80000130 <Task_B>
+    800000f0:	341e9073          	csrw	mepc,t4
+    800000f4:	4f05                	li	t5,1
+    800000f6:	00000f97          	auipc	t6,0x0
+    800000fa:	06af8f93          	addi	t6,t6,106 # 80000160 <first_time>
+    800000fe:	01efa023          	sw	t5,0(t6)
+
+0000000080000102 <switch>:
+    80000102:	020043b7          	lui	t2,0x2004
+    80000106:	2000ce37          	lui	t3,0x2000c
+    8000010a:	3e61                	addiw	t3,t3,-8
+    8000010c:	000e2e83          	lw	t4,0(t3) # 2000c000 <main-0x5fff4000>
+    80000110:	6f09                	lui	t5,0x2
+    80000112:	710f0f1b          	addiw	t5,t5,1808
+    80000116:	9efa                	add	t4,t4,t5
+    80000118:	01d3a023          	sw	t4,0(t2) # 2004000 <main-0x7dffc000>
+    8000011c:	30200073          	mret
+
+0000000080000120 <Task_A>:
+    80000120:	4281                	li	t0,0
+
+0000000080000122 <loop1>:
+    80000122:	10000337          	lui	t1,0x10000
+    80000126:	337d                	addiw	t1,t1,-1
+    80000128:	0285                	addi	t0,t0,1
+    8000012a:	fe62cce3          	blt	t0,t1,80000122 <loop1>
+
+000000008000012e <finish_a>:
+    8000012e:	a001                	j	8000012e <finish_a>
+
+0000000080000130 <Task_B>:
+    80000130:	040002b7          	lui	t0,0x4000
+    80000134:	32fd                	addiw	t0,t0,-1
+
+0000000080000136 <loop2>:
+    80000136:	4301                	li	t1,0
+    80000138:	12fd                	addi	t0,t0,-1
+    8000013a:	fe534ee3          	blt	t1,t0,80000136 <loop2>
+
+000000008000013e <finish_b>:
+    8000013e:	a001                	j	8000013e <finish_b>
+
+Disassembly of section .data:
+
+0000000080000140 <stack_a>:
+	...
+
+0000000080000150 <stack_b>:
+	...
+
+0000000080000160 <first_time>:
+    80000160:	0000                	unimp
+	...
+
+0000000080000164 <current>:
+    80000164:	0000                	unimp
+	...
+
+Disassembly of section .riscv.attributes:
+
+0000000000000000 <.riscv.attributes>:
+   0:	3641                	addiw	a2,a2,-16
+   2:	0000                	unimp
+   4:	7200                	ld	s0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <main-0x7fffffec>
+   c:	002c                	addi	a1,sp,8
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3676                	fld	fa2,376(sp)
+  14:	6934                	ld	a3,80(a0)
+  16:	7032                	0x7032
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	addiw	tp,tp,-5
+  1c:	3070                	fld	fa2,224(s0)
+  1e:	615f 7032 5f30      	0x5f307032615f
+  24:	3266                	fld	ft4,120(sp)
+  26:	3070                	fld	fa2,224(s0)
+  28:	645f 7032 5f30      	0x5f307032645f
+  2e:	30703263          	0x30703263
+  32:	0800                	addi	s0,sp,16
+  34:	0a01                	addi	s4,s4,0
+  36:	0b              	Address 0x0000000000000036 is out of bounds.
+
